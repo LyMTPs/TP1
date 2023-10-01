@@ -2,6 +2,7 @@
 ANDERS0N AREVALO MENDOZA - 202014997
 TP1 LOGO PARSER
  **/
+
 options 
 {
 	LOOKAHEAD=3; 
@@ -36,25 +37,24 @@ TOKEN: /* comandos y demas*/
 		|  <LEFT: "left" | "lt" >
 		|  <CLEAR: "clearscreen" | "cs" >
 		|  <PENUP: "penup" >
+		|  <BACK: "back" >
 		|  <PENDOWN: "pendown" >
 		|  <ARC: "arc" >
 		|  <REPEAT: "repeat" >
 		|  <TO: "to" >
 		|  <END: "end" >
 		|  <MAKE: "make" >
+		|  <SUM: "sum" >
 		|  <ID: (["a"-"z"]|["A"-"Z"])+ >
 		|  <NUM: (["0"-"9"])+>
 		|  < LB : "[" >
 		|  < RB : "]" >
-		
-		
 }
 void secuencia():
 {
 }
 {
-		(comandos())
-	|	(procedure())
+	(	(comandos())	)+
 		
 	< EOF >
 }
@@ -69,24 +69,21 @@ void comandos():
 (   			(< FORWARD > x=num()  )
  		| 	(<PENUP>)
 		|   (<PENDOWN>)
-		|   (<ARC >)
-   		| 	(< CLEAR >)
-   		| 	(< RIGHT >)
-   		| 	(< LEFT >)
-   		|   (< MAKE >)
+		| 	(<BACK> x=num())
+		|   (<ARC>  x=num() y=num() )
+   		| 	(<CLEAR>)
+   		| 	(<RIGHT> x=num() )
+   		| 	(<LEFT> x=num() )
+   		|   (<MAKE> <ID> {name = token.image; } x=num() { Variables.put(name,x); } )
    		| 	(<REPEAT > x=num() <LB> comandos() <RB>)
-   		|   (<TO><END> )
-   		| 	(<ID> {name = token.image; if (funciones.containsKey(name.toLowerCase())) {};})
+   		| 	(< SUM > x=num() y=num())
+   		|   (< TO > < ID> {name = token.image;funciones.add(name.toLowerCase());} comandos() <END>  )
+   		| 	(<ID> {name = token.image; if (funciones.containsKey(name.toLowerCase())) {}else {};})
 
 )+
 }
-void procedure():
-{
-  string name;
-}
-{
-  (< TO > < ID> {name = token.image;funciones.add(name.toLowerCase());} comandos() <END>  )
-}
+
+
  int num():
 	{	
 		int total=0;

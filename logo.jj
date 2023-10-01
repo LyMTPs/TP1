@@ -1,0 +1,93 @@
+/*
+ANDERS0N AREVALO MENDOZA - 202014997
+TP1 LOGO PARSER
+ **/
+options 
+{
+	LOOKAHEAD=3; 
+	IGNORE_CASE=true;
+	STATIC = false;
+	
+}
+   
+
+PARSER_BEGIN(logo)
+import java.util.HashMap;
+import java.util.ArrayList;
+@SuppressWarnings("serial")
+public class logo 
+{
+	private HashMap<String, Integer> Variables = new HashMap<String, Integer>();
+	private ArrayList<String> funciones = new ArrayList<String>();
+	String salida=new String();
+}
+PARSER_END(logo)
+SKIP:
+{
+	" "
+	|	"\r"
+	|	"\t"
+	| "\n"
+}
+TOKEN: /* comandos y demas*/
+{	
+		   <FORWARD: "forward" | "fd" >
+		|  <RIGHT: "right" | "rt" >
+		|  <LEFT: "left" | "lt" >
+		|  <CLEAR: "clearscreen" | "cs" >
+		|  <PENUP: "penup" >
+		|  <PENDOWN: "pendown" >
+		|  <ARC: "arc" >
+		|  <REPEAT: "repeat" >
+		|  <TO: "to" >
+		|  <END: "end" >
+		|  <MAKE: "make" >
+		|  <ID: (["a"-"z"]|["A"-"Z"])+ >
+		|  <NUM: (["0"-"9"])+>
+		|  < LB : "[" >
+		|  < RB : "]" >
+		
+		
+}
+void secuencia():
+{
+}
+{
+		(comandos())
+	|	(procedure())
+		
+	< EOF >
+}
+void comandos():
+{
+  int x=0;
+  int y = 0;
+  string name;
+  
+  }
+{
+(   			(< FORWARD > x=num()  )
+   		| 	(< CLEAR >)
+   		
+   		| (<REPEAT > x=num() <LB> comandos() <RB>)
+   		| (<ID> {name = token.image; if (funciones.containsKey(name.toLowerCase())) {};})
+
+)+
+}
+void procedure():
+{
+  string name;
+}
+{
+  (< TO > < ID> {name = token.image;funciones.add(name);} comandos() <END>  )
+}
+ int num():
+	{	
+		int total=0;
+		String name;
+	}
+	{
+		  (<NUM>{total = Integer.parseInt(token.image);})
+		| (<ID> {name = token.image; if (Variables.containsKey(name.toLowerCase())) { total = Variables.get(name.toLowerCase()); }})
+		{return total; }
+	}

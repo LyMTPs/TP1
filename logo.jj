@@ -67,10 +67,16 @@ void comandos():
   }
 {
 (   			(< FORWARD > x=num()  )
+ 		| 	(<PENUP>)
+		|   (<PENDOWN>)
+		|   (<ARC >)
    		| 	(< CLEAR >)
-   		
-   		| (<REPEAT > x=num() <LB> comandos() <RB>)
-   		| (<ID> {name = token.image; if (funciones.containsKey(name.toLowerCase())) {};})
+   		| 	(< RIGHT >)
+   		| 	(< LEFT >)
+   		|   (< MAKE >)
+   		| 	(<REPEAT > x=num() <LB> comandos() <RB>)
+   		|   (<TO><END> )
+   		| 	(<ID> {name = token.image; if (funciones.containsKey(name.toLowerCase())) {};})
 
 )+
 }
@@ -79,7 +85,7 @@ void procedure():
   string name;
 }
 {
-  (< TO > < ID> {name = token.image;funciones.add(name);} comandos() <END>  )
+  (< TO > < ID> {name = token.image;funciones.add(name.toLowerCase());} comandos() <END>  )
 }
  int num():
 	{	
